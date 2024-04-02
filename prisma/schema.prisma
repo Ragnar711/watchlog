@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users Table
+model User {
+  user_id  Int    @id @default(autoincrement())
+  username String @unique
+  password String
+}
+
+// Media Table
+model Media {
+  media_id     Int      @id @default(autoincrement())
+  title        String
+  release_date DateTime
+  media_type   Type
+  rating       Int      @default(0)
+
+  // Define relationships
+  genres     Genre[]
+  characters Character[]
+}
+
+// Genres Table
+model Genre {
+  genre_id   Int    @id @default(autoincrement())
+  genre_name Genres
+
+  // Define relationships
+  media Media[]
+}
+
+// Characters Table
+model Character {
+  character_id   Int    @id @default(autoincrement())
+  media_id       Int
+  character_name String
+
+  // Define foreign key
+  media Media @relation(fields: [media_id], references: [media_id])
+}
+
+enum Type {
+  Movie
+  TVShow
+  Anime
+}
+
+enum Genres {
+  Drama
+  Action
+  Comedy
+  Fantasy
+  SciFi
+  Horror
+  Romance
+  Thriller
+  Mystery
+  Historical
+  Adventure
+  Biography
+  Documentary
+  Crime
+  Animation
+  Family
+  Music
+  War
+  Western
+  Sport
+}
