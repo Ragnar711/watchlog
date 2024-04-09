@@ -1,6 +1,7 @@
 "use client";
-import { useSession, signIn, signOut } from "next-auth/react";
-import Image from "next/image";
+
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import bg from "./../assets/cine.jpg";
@@ -14,40 +15,21 @@ const styling = {
 
 export default function Home() {
     const { data: session } = useSession();
+    const router = useRouter();
 
-    if (session) {
-        return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <div className="w-44 h-44 relative mb-4">
-                    <Image
-                        src={session.user?.image as string}
-                        fill
-                        alt=""
-                        className="object-cover rounded-full"
-                    />
-                </div>
-                <p className="text-2xl mb-2">
-                    Welcome{" "}
-                    <span className="font-bold">{session.user?.name}</span>.
-                    Signed In As
-                </p>
-                <p className="font-bold mb-4">{session.user?.email}</p>
-                <button
-                    className="bg-red-600 py-2 px-6 rounded-md text-white"
-                    onClick={() => signOut()}
-                >
-                    Sign out
-                </button>
-            </div>
-        );
-    }
+    const handleLogin = () => {
+        signIn();
+        if (session) {
+            router.push("/home");
+        }
+    };
 
     return (
         <div
             style={styling}
             className="flex flex-col justify-center items-center"
         >
-            <div className="mx-auto max-w-4xl py-48 sm:py-32 lg:py-48 text-center backdrop-blur-xl bg-white/30 ">
+            <div className="mx-auto max-w-4xl py-48 sm:py-32 lg:py-48 text-center backdrop-blur-xl bg-white/30">
                 <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
                     Welcome to WatchLog!
                 </h1>
@@ -61,7 +43,7 @@ export default function Home() {
                 <div className="mt-16">
                     <Button
                         endIcon={<SendIcon />}
-                        onClick={() => signIn("github")}
+                        onClick={() => handleLogin()}
                         className="text-white outline outline-2 font-bold py-2 px-4 rounded hover:bg-gray-400"
                     >
                         Sign In using GitHub
